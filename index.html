@@ -15,7 +15,6 @@
             width: 100vw;
             height: 100vh;
             object-fit: cover;
-            transform: scaleX(-1); /* Отражение для селфи-камеры */
         }
     </style>
 </head>
@@ -23,9 +22,20 @@
     <video id="camera" autoplay playsinline></video>
     <script>
         async function startCamera() {
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                console.error('getUserMedia не поддерживается в этом браузере');
+                return;
+            }
             try {
+                const devices = await navigator.mediaDevices.enumerateDevices();
+                const hasCamera = devices.some(device => device.kind === 'videoinput');
+                if (!hasCamera) {
+                    console.error('Камера не найдена');
+                    return;
+                }
+                
                 const stream = await navigator.mediaDevices.getUserMedia({ 
-                    video: { facingMode: 'user', frameRate: { ideal: 70, max: 70 } } 
+                    video: { facingMode: 'environment', frameRate: { ideal: 70, max: 70 } } 
                 });
                 document.getElementById('camera').srcObject = stream;
             } catch (error) {
