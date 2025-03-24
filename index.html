@@ -32,6 +32,19 @@
                 console.error('Ошибка доступа к камере:', error);
             }
         }
+        
+        function toggleFullScreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.error(`Ошибка при переходе в полноэкранный режим: ${err.message}`);
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        }
+        
+        document.body.addEventListener('click', toggleFullScreen);
+        
         startCamera();
     </script>
 </body>
