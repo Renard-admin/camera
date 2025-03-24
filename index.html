@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Camera Fullscreen</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+        video {
+            position: absolute;
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
+            transform: scaleX(-1); /* Отражение для селфи-камеры */
+        }
+    </style>
+</head>
+<body>
+    <video id="camera" autoplay playsinline></video>
+    <script>
+        async function startCamera() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { facingMode: 'user', frameRate: { ideal: 70, max: 70 } } 
+                });
+                document.getElementById('camera').srcObject = stream;
+            } catch (error) {
+                console.error('Ошибка доступа к камере:', error);
+            }
+        }
+        startCamera();
+    </script>
+</body>
+</html>
