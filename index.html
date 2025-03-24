@@ -28,14 +28,17 @@
             }
             try {
                 const devices = await navigator.mediaDevices.enumerateDevices();
-                const hasCamera = devices.some(device => device.kind === 'videoinput');
-                if (!hasCamera) {
+                const videoDevices = devices.filter(device => device.kind === 'videoinput');
+                if (videoDevices.length === 0) {
                     console.error('Камера не найдена');
                     return;
                 }
                 
-                const stream = await navigator.mediaDevices.getUserMedia({ 
-                    video: { facingMode: 'environment', frameRate: { ideal: 70, max: 70 } } 
+                // Выбираем заднюю камеру, если она есть
+                let backCamera = videoDevices.find(device => device.label.toLowerCase().includes('back')) || videoDevices[0];
+                
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    video: { deviceId: { exact: backCamera.deviceId }, frameRate: { ideal: 70, max: 70 } }
                 });
                 document.getElementById('camera').srcObject = stream;
             } catch (error) {
